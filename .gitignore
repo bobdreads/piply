@@ -1,4 +1,4 @@
-# --- Django / Python ---
+# --- Django (Backend) ---
 __pycache__/
 *.py[cod]
 *$py.class
@@ -9,15 +9,19 @@ db.sqlite3
 staticfiles/
 media/
 
-# --- Next.js / Frontend (pasta web) ---
+# --- Next.js (Frontend - Pasta web) ---
+# Ignora dependências e builds, mas MANTÉM seu código
 web/node_modules/
 web/.next/
 web/out/
 web/build/
-web/.env.local
-web/.env.development.local
-web/.env.test.local
-web/.env.production.local
-web/npm-debug.log*
-web/yarn-debug.log*
-web/yarn-error.log*
+web/.env*.local
+web/.vercel/
+web/*.log
+
+# Mantém arquivos de configuração importantes
+!web/.env.example
+!web/package.json
+!web/package-lock.json
+!web/next.config.ts
+!web/tsconfig.json

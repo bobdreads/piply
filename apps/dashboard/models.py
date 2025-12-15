@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models import Sum
+from decimal import Decimal  # <--- NOVA IMPORTAÇÃO IMPORTANTE
 
 User = get_user_model()
 
@@ -58,8 +59,6 @@ class Trade(models.Model):
         User, on_delete=models.CASCADE, related_name='trades')
     portfolio = models.ForeignKey(
         Portfolio, on_delete=models.CASCADE, related_name='trades')
-
-    # --- CORREÇÃO: Campo Strategy Adicionado ---
     strategy = models.ForeignKey(
         Strategy, on_delete=models.SET_NULL, null=True, blank=True, related_name='trades')
 
@@ -184,6 +183,7 @@ class Ticket(models.Model):
 
 @receiver(post_save, sender=Trade)
 def update_tax_report(sender, instance, created, **kwargs):
+    # Só processa se o status for de fechamento
     if instance.status in [Trade.Status.CLOSED_TARGET, Trade.Status.CLOSED_STOP, Trade.Status.CLOSED_MANUAL]:
         report_month = instance.created_at.replace(
             day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -206,15 +206,16 @@ def update_tax_report(sender, instance, created, **kwargs):
             sum_fees=Sum('fees')
         )
 
-        total_net = aggregates['sum_result'] or 0
-        total_fees = aggregates['sum_fees'] or 0
+        total_net = aggregates['sum_result'] or Decimal('0.00')
+        total_fees = aggregates['sum_fees'] or Decimal('0.00')
 
         report.net_profit = total_net
         report.total_fees = total_fees
 
+        # Correção AQUI: Usando Decimal('0.15')
         if total_net > 0:
-            report.tax_due = total_net * 0.15
+            report.tax_due = total_net * Decimal('0.15')
         else:
-            report.tax_due = 0
+            report.tax_due = Decimal('0.00')
 
         report.save()

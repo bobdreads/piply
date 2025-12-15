@@ -1,53 +1,56 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, TabularInline  # <--- Importação do Unfold
 from .models import (
     Portfolio, Strategy, Trade, JournalNote, Tag,
     TradeEntry, TradeExit, PortfolioTransaction,
     TaxReport, Ticket
 )
 
-# --- Configurações de Inlines (Para editar tudo na mesma tela) ---
+# --- Inlines (Tabelas dentro de tabelas) ---
+# Usamos TabularInline do Unfold para ficar bonito
 
 
-class TradeEntryInline(admin.TabularInline):
+class TradeEntryInline(TabularInline):
     model = TradeEntry
-    extra = 1
+    extra = 0
+    tab = True  # Estilo em abas
 
 
-class TradeExitInline(admin.TabularInline):
+class TradeExitInline(TabularInline):
     model = TradeExit
     extra = 0
+    tab = True
 
 
-class TransactionInline(admin.TabularInline):
+class TransactionInline(TabularInline):
     model = PortfolioTransaction
     extra = 0
+    tab = True
 
-# --- Admins Principais ---
+# --- Admins Principais (Herdam de ModelAdmin do Unfold) ---
 
 
 @admin.register(Portfolio)
-class PortfolioAdmin(admin.ModelAdmin):
+class PortfolioAdmin(ModelAdmin):
     list_display = ('name', 'user', 'balance', 'currency', 'created_at')
     search_fields = ('name', 'user__username')
     inlines = [TransactionInline]
 
 
 @admin.register(Strategy)
-class StrategyAdmin(admin.ModelAdmin):
+class StrategyAdmin(ModelAdmin):
     list_display = ('name', 'user')
-    filter_horizontal = ('tags',)  # Facilita a seleção de muitas tags
+    filter_horizontal = ('tags',)
 
 
 @admin.register(Trade)
-class TradeAdmin(admin.ModelAdmin):
+class TradeAdmin(ModelAdmin):
     list_display = ('id', 'symbol', 'side', 'status',
                     'net_result', 'user', 'created_at')
     list_filter = ('status', 'side', 'created_at')
     search_fields = ('symbol', 'user__username')
-    # Permite adicionar entradas/saídas dentro do Trade
     inlines = [TradeEntryInline, TradeExitInline]
 
-    # Organiza os campos em seções
     fieldsets = (
         ('Identificação', {
             'fields': ('user', 'portfolio', 'strategy', 'symbol')
@@ -57,26 +60,32 @@ class TradeAdmin(admin.ModelAdmin):
         }),
         ('Resultado', {
             'fields': ('fees', 'net_result'),
-            'classes': ('collapse',)  # Esconde por padrão para não poluir
+            # 'classes': ('collapse',) # No Unfold o collapse é diferente, melhor deixar visível por enquanto
         }),
     )
 
 
 @admin.register(TaxReport)
-class TaxReportAdmin(admin.ModelAdmin):
+class TaxReportAdmin(ModelAdmin):
     list_display = ('__str__', 'net_profit', 'tax_due', 'is_paid')
     list_filter = ('is_paid', 'month')
-    list_editable = ('is_paid',)  # Permite marcar como pago direto na lista
+    list_editable = ('is_paid',)
 
 
 @admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
+class TicketAdmin(ModelAdmin):
     list_display = ('id', 'subject', 'user', 'status', 'created_at')
     list_filter = ('status',)
 
-
 # --- Registros Simples ---
-admin.site.register(Tag)
-admin.site.register(JournalNote)
-# admin.site.register(TradeEntry) # Não precisa registrar solto se já está no inline do Trade
-# admin.site.register(TradeExit)
+# Para registros simples sem customização, pode usar o decorator direto ou criar classe
+
+
+@admin.register(Tag)
+class TagAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(JournalNote)
+class JournalNoteAdmin(ModelAdmin):
+    list_display = ('__str__', 'user', 'created_at')

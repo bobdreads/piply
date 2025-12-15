@@ -20,3 +20,8 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+# No final de config/urls.py
+admin.site.site_header = "PipLy Admin"
+admin.site.site_title = "PipLy Portal"
+admin.site.index_title = "Bem-vindo ao Painel PipLy"

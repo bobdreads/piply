@@ -1,19 +1,18 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin, TabularInline  # <--- Importação do Unfold
+from unfold.admin import ModelAdmin, TabularInline
 from .models import (
     Portfolio, Strategy, Trade, JournalNote, Tag,
     TradeEntry, TradeExit, PortfolioTransaction,
     TaxReport, Ticket
 )
 
-# --- Inlines (Tabelas dentro de tabelas) ---
-# Usamos TabularInline do Unfold para ficar bonito
+# --- Inlines (Opcionais para trades parciais) ---
 
 
 class TradeEntryInline(TabularInline):
     model = TradeEntry
     extra = 0
-    tab = True  # Estilo em abas
+    tab = True
 
 
 class TradeExitInline(TabularInline):
@@ -27,58 +26,69 @@ class TransactionInline(TabularInline):
     extra = 0
     tab = True
 
-# --- Admins Principais (Herdam de ModelAdmin do Unfold) ---
+# --- Admins ---
+
+
+@admin.register(Trade)
+class TradeAdmin(ModelAdmin):
+    # Lista organizada
+    list_display = ('symbol', 'status', 'side', 'asset_type',
+                    'entry_price', 'net_result', 'created_at')
+    list_filter = ('status', 'asset_type', 'portfolio')
+    search_fields = ('symbol',)
+    inlines = [TradeEntryInline, TradeExitInline]
+
+    # SEÇÕES ORGANIZADAS COMO PEDIDO
+    fieldsets = (
+        # Aba 1: O Básico (Igual antes)
+        ('Configuração do Trade', {
+            'fields': ('user', 'portfolio', 'strategy', 'symbol', 'asset_type', 'side')
+        }),
+
+        # Aba 2: Preços e Datas (Agora com Data Editável!)
+        ('Execução', {
+            'fields': ('quantity', 'entry_price', 'exit_price', 'created_at', 'closed_at', 'status')
+        }),
+
+        # Aba 3: Resultado Financeiro
+        ('Financeiro', {
+            'fields': ('fees', 'net_result')
+        }),
+
+        # Aba 4: Fiscal & Sistema (A "Quarta Aba" isolada)
+        ('Dados Fiscais (Automático)', {
+            'classes': ('collapse',),  # Começa fechado para não poluir
+            'description': 'A PTAX é buscada automaticamente no Banco Central ao fechar trades internacionais.',
+            'fields': ('exchange_rate', 'total_sale_value')
+        }),
+    )
+
+    # Impede edição manual acidental da PTAX, mas mostra o valor
+    # Se quiser editar na mão em caso de erro, remova 'exchange_rate' daqui.
+    readonly_fields = ('total_sale_value',)
+
+
+@admin.register(TaxReport)
+class TaxReportAdmin(ModelAdmin):
+    list_display = ('__str__', 'tax_due_br',
+                    'tax_provision_offshore', 'is_paid')
+    list_filter = ('month', 'is_paid')
 
 
 @admin.register(Portfolio)
 class PortfolioAdmin(ModelAdmin):
-    list_display = ('name', 'user', 'balance', 'currency', 'created_at')
-    search_fields = ('name', 'user__username')
+    list_display = ('name', 'user', 'balance')
     inlines = [TransactionInline]
 
 
 @admin.register(Strategy)
 class StrategyAdmin(ModelAdmin):
-    list_display = ('name', 'user')
     filter_horizontal = ('tags',)
-
-
-@admin.register(Trade)
-class TradeAdmin(ModelAdmin):
-    list_display = ('id', 'symbol', 'side', 'status',
-                    'net_result', 'user', 'created_at')
-    list_filter = ('status', 'side', 'created_at')
-    search_fields = ('symbol', 'user__username')
-    inlines = [TradeEntryInline, TradeExitInline]
-
-    fieldsets = (
-        ('Identificação', {
-            'fields': ('user', 'portfolio', 'strategy', 'symbol')
-        }),
-        ('Detalhes da Operação', {
-            'fields': ('side', 'status')
-        }),
-        ('Resultado', {
-            'fields': ('fees', 'net_result'),
-            # 'classes': ('collapse',) # No Unfold o collapse é diferente, melhor deixar visível por enquanto
-        }),
-    )
-
-
-@admin.register(TaxReport)
-class TaxReportAdmin(ModelAdmin):
-    list_display = ('__str__', 'net_profit', 'tax_due', 'is_paid')
-    list_filter = ('is_paid', 'month')
-    list_editable = ('is_paid',)
 
 
 @admin.register(Ticket)
 class TicketAdmin(ModelAdmin):
-    list_display = ('id', 'subject', 'user', 'status', 'created_at')
-    list_filter = ('status',)
-
-# --- Registros Simples ---
-# Para registros simples sem customização, pode usar o decorator direto ou criar classe
+    list_display = ('subject', 'status')
 
 
 @admin.register(Tag)
@@ -88,4 +98,4 @@ class TagAdmin(ModelAdmin):
 
 @admin.register(JournalNote)
 class JournalNoteAdmin(ModelAdmin):
-    list_display = ('__str__', 'user', 'created_at')
+    pass

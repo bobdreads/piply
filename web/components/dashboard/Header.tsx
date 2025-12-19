@@ -1,32 +1,33 @@
-import { Button } from "@/components/ui/Button"; // Reutilizando nosso componente!
-import { Bell } from "lucide-react";
+"use client";
+import * as React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { SearchIcon } from "@/components/icons/SearchIcon"; 
 
 export function Header() {
   return (
-    <header className="h-16 bg-slate-950 border-b border-slate-800 flex items-center justify-between px-6 sticky top-0 z-20">
-      {/* Lado Esquerdo (Título ou Breadcrumb) */}
-      <div>
-        <h2 className="text-white font-semibold">Dashboard</h2>
-      </div>
+    <header className='flex items-center px-8 py-8 bg-fback space-y-2'>
+      <nav className="flex items-center justify-between w-full">
+        <div className="flex gap-6 items-center">
+          <img className="" src="/assets/Logo.svg"alt="Logo PipLy"/>
 
-      {/* Lado Direito (Ações) */}
-      <div className="flex items-center gap-4">
-        <button className="text-slate-400 hover:text-white transition-colors relative">
-          <Bell size={20} />
-          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-950"></span>
-        </button>
-        
-        {/* Placeholder do Usuário */}
-        <div className="flex items-center gap-3 pl-4 border-l border-slate-800">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-white">Trader Pro</p>
-            <p className="text-xs text-slate-400">Plano Basic</p>
+          {/* CAIXA DE BUSCA (Container) */}
+          <div className="w-[360px] h-[48px] mx-4 my-3 rounded-[8px] flex items-center gap-2 px-4 py-3 border border-[var(--foundation-black-400)]transition-all duration-200 ease-in-out focus-within:border-primary-500 focus-within:border-2">
+            
+            <SearchIcon className="text-[var(--foundation-black-400)] w-6 h-6" />
+
+            {/* INPUT DE TEXTO */}
+            <input type="text" placeholder="Buscar..." className="bg-transparent border-none outline-none w-full h-full text-black-500 placeholder-black-500 focus:placeholder-transparent focus:text-white" />
           </div>
-          <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold text-xs">
-            TP
+          <div className="px-14 py-4 h-auto flex items-center gap-6">
+            <a href="#" className="text-[var(--foundation-black-300)] hover:text-primary-400 transition-colors duration-200">Link 1</a>
+            <a href="#" className="text-[var(--foundation-black-300)] hover:text-[var(--foundation-blue-400)] transition-colors duration-200">Link 2</a>
+            <a href="#" className="text-[var(--foundation-black-300)] hover:text-[var(--foundation-blue-400)] transition-colors duration-200">Link 3</a>
+            <a href="#" className="text-[var(--foundation-black-300)] hover:text-[var(--foundation-blue-400)] transition-colors duration-200">Link 4</a>
+            <a href="#" className="text-[var(--foundation-black-300)] hover:text-[var(--foundation-blue-400)] transition-colors duration-200">Link 5</a>
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

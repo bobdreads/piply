@@ -1,28 +1,71 @@
 @import "tailwindcss";
 
-@layer base {
-  button,
-  input,
-  select,
-  textarea {
-    @apply appearance-none bg-transparent border-0 outline-none;
-  }
+/* --- 1. CONFIGURAÇÃO DO TAILWIND v4 (Substitui o tailwind.config.ts) --- */
+@theme {
+  /* Definir a Fonte Padrão */
+  --font-sans: var(--font-banana), ui-sans-serif, system-ui, sans-serif;
+
+  /* --- Cores: Primary (Mapeado para o Azul) --- */
+  --color-primary-50: var(--foundation-blue-50);
+  --color-primary-100: var(--foundation-blue-100);
+  --color-primary-200: var(--foundation-blue-200);
+  --color-primary-300: var(--foundation-blue-300);
+  --color-primary-400: var(--foundation-blue-400); /* A COR QUE QUERIAS! */
+  --color-primary-500: var(--foundation-blue-500);
+  --color-primary-600: var(--foundation-blue-600);
+  --color-primary-700: var(--foundation-blue-700);
+  --color-primary-800: var(--foundation-blue-800);
+  --color-primary-900: var(--foundation-blue-900);
+  --color-primary: var(--foundation-blue-500);
+
+  /* --- Cores: Black (Mapeado para o Preto) --- */
+  --color-black-50: var(--foundation-black-50);
+  --color-black-100: var(--foundation-black-100);
+  --color-black-200: var(--foundation-black-200);
+  --color-black-300: var(--foundation-black-300);
+  --color-black-400: var(--foundation-black-400);
+  --color-black-500: var(--foundation-black-500);
+  --color-black-600: var(--foundation-black-600);
+  --color-black-700: var(--foundation-black-700);
+  --color-black-800: var(--foundation-black-800);
+  --color-black-900: var(--foundation-black-900);
+  --color-black: var(--foundation-black-500);
+
+  /* --- Cores: Success (Verde) --- */
+  --color-success-50: var(--foundation-green-50);
+  --color-success-100: var(--foundation-green-100);
+  --color-success-200: var(--foundation-green-200);
+  --color-success-300: var(--foundation-green-300);
+  --color-success-400: var(--foundation-green-400);
+  --color-success-500: var(--foundation-green-500);
+  --color-success: var(--foundation-green-500);
+
+  /* --- Cores: Danger (Vermelho) --- */
+  --color-danger-50: var(--foundation-red-50);
+  --color-danger-100: var(--foundation-red-100);
+  --color-danger-200: var(--foundation-red-200);
+  --color-danger-300: var(--foundation-red-300);
+  --color-danger-400: var(--foundation-red-400);
+  --color-danger-500: var(--foundation-red-500);
+  --color-danger: var(--foundation-red-500);
+
+  /* --- Outras Cores --- */
+  --color-white-500: var(--foundation-white-500);
+  --color-white-900: var(--foundation-white-900);
+  --color-white: var(--foundation-white-500);
+  --color-purple-500: var(--foundation-purple-500);
+  --color-purple: var(--foundation-purple-500);
 }
 
+/* --- 2. VARIÁVEIS CSS (Os valores reais) --- */
 :root {
-  /* --- SISTEMA DE CORES (Valores exatos do seu Figma, nomes limpos) --- */
-  
   /* Preto (Foundation Black) */
   --foundation-black-50: rgba(230, 230, 230, 1);
   --foundation-black-100: rgba(176, 176, 176, 1);
   --foundation-black-200: rgba(138, 138, 138, 1);
   --foundation-black-300: rgba(84, 84, 84, 1);
   --foundation-black-400: rgba(51, 51, 51, 1);
-  --foundation-black-500: rgba(0, 0, 0, 1);  /* PRETO TOTAL */
-  
-  /* Branco (Foundation White) */
-  --foundation-white-500: rgba(255, 255, 255, 1);
-  --foundation-white-900: rgba(107, 107, 107, 1);
+  --foundation-black-500: rgba(0, 0, 0, 1);
 
   /* Azul (Foundation Blue) */
   --foundation-blue-50: rgba(249, 254, 255, 1);
@@ -30,31 +73,75 @@
   --foundation-blue-200: rgba(227, 250, 255, 1);
   --foundation-blue-300: rgba(214, 248, 255, 1);
   --foundation-blue-400: rgba(206, 246, 255, 1);
-  --foundation-blue-500: rgba(194, 244, 255, 1); /* SUA COR PRIMARY PROVAVELMENTE */
+  --foundation-blue-500: rgba(194, 244, 255, 1);
   --foundation-blue-600: rgba(177, 222, 232, 1);
   --foundation-blue-700: rgba(138, 173, 181, 1);
   --foundation-blue-800: rgba(107, 134, 140, 1);
   --foundation-blue-900: rgba(81, 102, 107, 1);
 
   /* Verde (Foundation Green) */
-  --foundation-green-500: rgba(177, 255, 194, 1);
   --foundation-green-50: rgba(247, 255, 249, 1);
+  --foundation-green-100: rgba(231, 255, 236, 1);
+  --foundation-green-200: rgba(219, 255, 227, 1);
+  --foundation-green-300: rgba(203, 255, 214, 1);
+  --foundation-green-400: rgba(193, 255, 206, 1);
+  --foundation-green-500: rgba(177, 255, 194, 1);
+  --foundation-green-600: rgba(161, 232, 177, 1);
+  --foundation-green-700: rgba(126, 181, 138, 1);
+  --foundation-green-800: rgba(97, 140, 107, 1);
+  --foundation-green-900: rgba(74, 107, 81, 1);
 
   /* Vermelho (Foundation Red) */
-  --foundation-red-500: rgba(255, 176, 185, 1);
   --foundation-red-50: rgba(255, 247, 248, 1);
+  --foundation-red-100: rgba(255, 231, 233, 1);
+  --foundation-red-200: rgba(255, 219, 223, 1);
+  --foundation-red-300: rgba(255, 202, 208, 1);
+  --foundation-red-400: rgba(255, 192, 199, 1);
+  --foundation-red-500: rgba(255, 176, 185, 1);
+  --foundation-red-600: rgba(232, 160, 168, 1);
+  --foundation-red-700: rgba(181, 125, 131, 1);
+  --foundation-red-800: rgba(140, 97, 102, 1);
+  --foundation-red-900: rgba(107, 74, 78, 1);
 
-  /* Roxo (Foundation Purple) */
+  /* Outras */
+  --foundation-white-500: rgba(255, 255, 255, 1);
+  --foundation-white-900: rgba(107, 107, 107, 1);
   --foundation-purple-500: rgba(198, 192, 255, 1);
+  --foundation-bg-black: rgba(07, 07, 08, 1);
+  --foundation-black-btn: rgba(29, 29, 29, 1);
 
-  /* Variáveis Padrão do Shadcn/Next Mapeadas */
-  --background: var(--foundation-black-500); 
+  /* Variáveis Padrão */
+  --background: var(--foundation-bg-black); 
   --foreground: var(--foundation-white-500);
+}
+
+/* --- 3. RESET --- */
+@layer base {
+  button, input, select, textarea {
+    @apply appearance-none bg-transparent border-0 outline-none;
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  /* Usa a variável --font-banana que definimos no layout.tsx */
   font-family: var(--font-banana), sans-serif; 
+}
+
+.polygon {
+  position: absolute;
+  top: -200px;
+  left: 818px;
+  width: 901px;
+  height: 859px;
+  z-index: 0; /* ou -1 */
+  pointer-events: none;
+}
+
+.dashboard-bg {
+  background-color: var(--foundation-bg-black);
+  background-image: url("/assets/Polygon_fundo.svg");
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: auto;
 }

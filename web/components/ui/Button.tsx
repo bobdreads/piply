@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 // Definimos as variantes disponíveis (igual às Properties do Figma)
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  variant?: "primary" | "danger" | "notification" | "profile";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean; // Para mostrar spinner de carregamento
 }
@@ -13,21 +13,20 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", isLoading, children, disabled, ...props }, ref) => {
     
     // Estilos Base (Aplicados a todos os botões)
-    const baseStyles = "inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:pointer-events-none disabled:opacity-50 active:scale-95";
+    const baseStyles = "inline-flex items-center justify-center rounded-lg font-sans transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:pointer-events-none disabled:opacity-50 active:scale-95";
     
     // Variantes de Estilo (Cores)
     const variants = {
-      primary: "bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg shadow-emerald-900/20",
-      secondary: "bg-slate-800 text-slate-200 hover:bg-slate-700 border border-slate-700",
-      outline: "border-2 border-slate-700 bg-transparent hover:bg-slate-800 text-slate-200",
-      ghost: "hover:bg-slate-800 text-slate-400 hover:text-white",
-      danger: "bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20",
+      primary: "bg-white text-black-500 hover:bg-primary-400 font-sans px",
+      danger: "bg-danger-500/10 text-danger-500 hover:bg-danger-500/20 border border-danger-500/20",
+      notification:"p-8 bg-[#1d1d1d] text-white hover:text-primary-400",
+      profile: "w-10 h-10 overflow-hidden",
     };
 
     // Variantes de Tamanho
     const sizes = {
       sm: "h-9 px-3 text-xs",
-      md: "h-11 px-8 py-2 text-sm",
+      md: "p-2 text-base",
       lg: "h-14 px-10 text-base",
     };
 
